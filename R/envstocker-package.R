@@ -4,6 +4,8 @@
 "_PACKAGE"
 
 
+
+       
 ##' This function converts a list of environments to a normal list 
 ##' @title convert list of environments to a normal list
 ##' @param elist list of environment
@@ -232,7 +234,8 @@
 ##' .ee.recover()
 #' @export
 .eel <- function(ee=.ee[[length(.ee)]],vartop="") {
-    if(.ee.recovered==TRUE){
+    eer=get(".ee.recovered",.GlobalEnv);
+    if(eer==TRUE){
         .ee.backup();
     }else{
         .ee.clear();
@@ -244,9 +247,14 @@
 ##' @title set temporal .GlobalEnv
 ##' @author Hiroshi C. Ito
 ##' @examples
+##' .ee.set()
 ##' .ee.backup()
 #' @export
 .ee.backup <- function(){
+    if(!get(".ee.recovered",.GlobalEnv)){
+        cat("already backuped!\n")
+    }else{
+  
     if(!exists(".eeb",envir=.GlobalEnv)){
         .eeb<<-new.env();
     }
@@ -256,47 +264,48 @@
     
     oname=ls(all.names=TRUE,envir=.GlobalEnv);
     oname=oname[substr(oname,1,3)!=".ee"];
-
-    mapply(assign, oname, mget(oname, .GlobalEnv), list(.eeb),
-           SIMPLIFY = FALSE, USE.NAMES = FALSE)
-
+    if(length(oname)>0){
+        mapply(assign, oname, mget(oname, .GlobalEnv), list(.eeb),
+               SIMPLIFY = FALSE, USE.NAMES = FALSE)
+    }
    
     rm(list=oname,envir=.GlobalEnv);
 
     attach(.eeb);
-    envr=parent.env(environment());
-    unlockBinding(".ee.recovered",envr);
-    assign(".ee.recovered",FALSE,envr);
-    lockBinding(".ee.recovered",envr);
-}
 
-#' @export
-.ee.recovered=TRUE;
+ 
+        assign(".ee.recovered",FALSE,.GlobalEnv);
+        }
+ }
 
 ##' This function recovers the original .GlobalEnv by copying objects from ".eeb".  When the current .GlobalEnv is the original one, ".ee.recovered" is "TRUE".
 ##' @title recover original .GlobalEnv
 ##' @author Hiroshi C. Ito
 ##' @examples
+##' .ee.set()
 ##' .ee.backup()
 ##' .ee.recover()
 #' @export
 .ee.recover  <- function(){
+    if(get(".ee.recovered",.GlobalEnv)){
+        cat("already recovered!\n")
+    }else{
+        
     .ee.clear();
     .ee.copy(.eeb,.GlobalEnv);
     while(sum(search()==".eeb")>0)detach(.eeb);
     rm(list=ls(all.names=TRUE,envir=.eeb),envir=.eeb);
 
-    envr=parent.env(environment());
-    unlockBinding(".ee.recovered",envr);
-    assign(".ee.recovered",TRUE,envr);
-    lockBinding(".ee.recovered",envr);
-    
+    assign(".ee.recovered",TRUE,.GlobalEnv);
+
+    }
 }
 
 ##' This function removes all objects in .GlobalEnv except ".ee*" 
 ##' @title removes objects in .GlobalEnv.
 ##' @author Hiroshi C. Ito
 ##' @examples
+##' .ee.set()
 ##' .ee.clear()
 #' @export
 .ee.clear <- function(){
@@ -311,8 +320,10 @@
 .ee.copy <- function(env0, env1){
     oname=ls(env0, all.names=TRUE);
     oname=oname[substr(oname,1,3)!=".ee"];
-    mapply(assign, oname, mget(oname, env0), list(env1),
-           SIMPLIFY = FALSE, USE.NAMES = FALSE)
+    if(length(oname)>0){
+        mapply(assign, oname, mget(oname, env0), list(env1),
+               SIMPLIFY = FALSE, USE.NAMES = FALSE)
+    }
 }
 
 ##' This function generates a list of environment named ".ee".
@@ -322,6 +333,14 @@
 ##' .ee.set()
 #' @export
 .ee.set <- function(){
+    if(exists(".ee.recovered")){
+        if(!.ee.recovered){
+            .ee.recover();
+            }
+    }else{
+            assign(".ee.recovered", TRUE, .GlobalEnv);
+    }
+    
     if(exists(".ee",envir=.GlobalEnv))rm(".ee",envir=.GlobalEnv);
     assign(".ee",list(time=proc.time()[3]), .GlobalEnv) 
 }
