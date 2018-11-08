@@ -4,7 +4,6 @@
 "_PACKAGE"
 
 
-
        
 ##' This function converts a list of environments to a normal list 
 ##' @title convert list of environments to a normal list
@@ -35,12 +34,18 @@
 ##' return(x+1)}
 ##' .ee.set()
 ##' testfunc(3)
-##' .ee.str.ls()
-##' .ee.str.ls(0)
+##' .ee.ls.str()
+##' .ee.ls.str(0)
 #' @export
-.ee.str.ls <- function(n=1){
+.ee.ls.str <- function(n=1){
     return(ls.str(.ee.get(n=n)));
 }
+
+##' This function is a short-name varsion of ".ee.ls.str()". 
+##' @title a short-name varsion of ".ee.ls.str()". 
+#' @export
+.ee. = .ee.ls.str
+
 
 
 ##' This function shows the stracture of ".ee.get()" 
@@ -131,6 +136,12 @@
     assign(".ee", c(.ee,eb), .GlobalEnv) 
 }
 
+
+##' This function is a short-name varsion of ".ee.append()". 
+##' @title a short-name varsion of ".ee.append()". 
+#' @export
+.ee.a = .ee.append;
+
 ##' This function load object from a stocked environment, without calling ".ee.backup()". 
 ##' @title load objects from environment without taking backup
 ##' @param ee environment from which objects are loaded.
@@ -152,7 +163,7 @@
 
         varname=names(formals(args(fname)));
         cat(fname," <- ");
-       cat(str(args(fname)),"\n");
+       cat(str(args(fname)));
         }else{           
             if(vartop==0){
                 varname=names(ee);
@@ -175,7 +186,7 @@
 
 ##' This function loads objects from a stocked environment specified by "ee". If "ee" is not specified, then the last stocked environment is used.
 ##'
-##' By adding ".ee.append("function_name",environment())" at the first line of functions called in your R script, and add ".ee.set()" in your R script, the execution environments of those functions are stocked in a list named ".ee". Each environmend can be loaded afterward in .GlobalEnv by ".eel" function, where objects in .Globalenv are copied to an environment named ".eeb", and ".eeb" becomes the parent environment of .GlobalEnv. The original environment is recovered by ".ee.recover()".
+##' By adding ".ee.append("function_name",environment())" at the first line of functions called in your R script, and add ".ee.set()" in your R script, the execution environments of those functions are stocked in a list named ".ee". Each environmend can be loaded afterward in .GlobalEnv by ".ee.l" function, where objects in .Globalenv are copied to an environment named ".ee.b", and ".ee.b" becomes the parent environment of .GlobalEnv. The original environment is recovered by ".ee.recover()".
 ##' @title load objencts from a stocked environment
 ##' @param ee environment from which objects are loaded.
 ##' @param vartop integer(0) or character : if not specified, then only the arguments of the function are loaded. If 0 then all objects are loaded. If "varname", objects upto "varname" are loaded. When "varname" is the first argument of the function, all arguments are loaded.  
@@ -201,39 +212,39 @@
 ##' fact(3,1,flag_ppp=FALSE);
 ##' .ee.subt_time();
 ##'
-##' ls()
-##' ls(all.names=TRUE)
+##' ls.str()
+##' ls.str(all.names=TRUE)
 ##'
-##' names(.ee)
-##'
-##' .ee.str(0)
+##' .ee.(0)
 ##' 
-##' .eel()
-##' ls()
+##' .ee.l()
+##' ls.str()
 ##' 
-##' .eel(vartop=0)
-##' ls()
+##' .ee.l(vartop=0)
+##' ls.str()
 ##'
-##' .eel(.ee$fact.2)
-##' ls()
+##' .ee.l(.ee$fact.2)
+##' ls.str()
 ##' 
 ##' .ee.recover()
-##' ls()
+##' ls.str()
+##'
+##' as.list(.ee$fact.2)
 ##' 
 ##' .ee.set()
 ##' fact(3,1,flag_ppp=TRUE) ##This causes error because ppp does not exist
 ##' .ee.subt_time()
 ##'
-##' .ee.str(0)
+##' .ee.(0)
 ##' 
-##' .eel()
-##' ls()
+##' .ee.l()
+##' ls.str()
 ##' 
-##' .eel(vartop=0)
-##' ls()
+##' .ee.l(vartop=0)
+##' ls.str()
 ##' .ee.recover()
 #' @export
-.eel <- function(ee=.ee[[length(.ee)]],vartop="") {
+.ee.l <- function(ee=.ee[[length(.ee)]],vartop="") {
     eer=get(".ee.recovered",.GlobalEnv);
     if(eer==TRUE){
         .ee.backup();
@@ -243,7 +254,7 @@
     .ee.look(ee=ee,vartop=vartop);
 }
 
-##' This function copies objects in the original .GlobalEnv to the environment named ".eeb", and remove all objects in .GlobalEnv except ".ee*".
+##' This function copies objects in the original .GlobalEnv to the environment named ".ee.b", and remove all objects in .GlobalEnv except ".ee*".
 ##' @title set temporal .GlobalEnv
 ##' @author Hiroshi C. Ito
 ##' @examples
@@ -255,30 +266,30 @@
         cat("already backuped!\n")
     }else{
   
-    if(!exists(".eeb",envir=.GlobalEnv)){
-        .eeb<<-new.env();
+    if(!exists(".ee.b",envir=.GlobalEnv)){
+        .ee.b<<-new.env();
     }
 
-    while(sum(search()==".eeb")>0)detach(.eeb)
+    while(sum(search()==".ee.b")>0)detach(.ee.b)
     
     
     oname=ls(all.names=TRUE,envir=.GlobalEnv);
     oname=oname[substr(oname,1,3)!=".ee"];
     if(length(oname)>0){
-        mapply(assign, oname, mget(oname, .GlobalEnv), list(.eeb),
+        mapply(assign, oname, mget(oname, .GlobalEnv), list(.ee.b),
                SIMPLIFY = FALSE, USE.NAMES = FALSE)
     }
    
     rm(list=oname,envir=.GlobalEnv);
 
-    attach(.eeb);
+    attach(.ee.b);
 
  
         assign(".ee.recovered",FALSE,.GlobalEnv);
         }
  }
 
-##' This function recovers the original .GlobalEnv by copying objects from ".eeb".  When the current .GlobalEnv is the original one, ".ee.recovered" is "TRUE".
+##' This function recovers the original .GlobalEnv by copying objects from ".ee.b".  When the current .GlobalEnv is the original one, ".ee.recovered" is "TRUE".
 ##' @title recover original .GlobalEnv
 ##' @author Hiroshi C. Ito
 ##' @examples
@@ -292,14 +303,19 @@
     }else{
         
     .ee.clear();
-    .ee.copy(.eeb,.GlobalEnv);
-    while(sum(search()==".eeb")>0)detach(.eeb);
-    rm(list=ls(all.names=TRUE,envir=.eeb),envir=.eeb);
+    .ee.copy(.ee.b,.GlobalEnv);
+    while(sum(search()==".ee.b")>0)detach(.ee.b);
+    rm(list=ls(all.names=TRUE,envir=.ee.b),envir=.ee.b);
 
     assign(".ee.recovered",TRUE,.GlobalEnv);
 
     }
 }
+
+##' This function is a short-name varsion of ".ee.recover()". 
+##' @title a short-name varsion of ".ee.recover()". 
+#' @export
+.ee.r = .ee.recover;
 
 ##' This function removes all objects in .GlobalEnv except ".ee*" 
 ##' @title removes objects in .GlobalEnv.

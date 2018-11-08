@@ -10,6 +10,7 @@
 This function removes all objects in .GlobalEnv except ".ee*"
 }
 \examples{
+.ee.set()
 .ee.clear()
 }
 \author{
