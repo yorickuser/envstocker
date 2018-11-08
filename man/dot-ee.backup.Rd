@@ -10,6 +10,7 @@
 This function copies objects in the original .GlobalEnv to the environment named ".eeb", and remove all objects in .GlobalEnv except ".ee*".
 }
 \examples{
+.ee.set()
 .ee.backup()
 }
 \author{

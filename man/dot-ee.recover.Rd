@@ -10,6 +10,7 @@
 This function recovers the original .GlobalEnv by copying objects from ".eeb".  When the current .GlobalEnv is the original one, ".ee.recovered" is "TRUE".
 }
 \examples{
+.ee.set()
 .ee.backup()
 .ee.recover()
 }
