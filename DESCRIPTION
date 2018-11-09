@@ -2,7 +2,7 @@ Package: envstocker
 Title: stocking and loading execution environments of functions 
 Version: 0.0.0.9000
 Authors@R: person("Hiroshi C.", "Ito", email = "hiroshibeetle@gmail.com", role = c("aut", "cre"))
-Description: For usage example, see descripton for ".eel" function.
+Description: For usage example, see descripton for ".ee.l" function.
 Depends: R (>= 3.4.4)
 License: GPL-3
 Encoding: UTF-8
