@@ -357,8 +357,14 @@
             assign(".ee.recovered", TRUE, .GlobalEnv);
     }
     
-    if(exists(".ee",envir=.GlobalEnv))rm(".ee",envir=.GlobalEnv);
-    assign(".ee",list(time=proc.time()[3]), .GlobalEnv) 
+    if(exists(".ee",envir=.GlobalEnv)){
+        for(i in 1:length(.ee)){
+            if(is.environment(.ee[[i]]))rm(list=ls(all.names=TRUE,envir=.ee[[i]]),envir=.ee[[i]]);
+        }
+        rm(".ee",envir=.GlobalEnv);
+    }
+    assign(".ee",list(time=proc.time()[3]), .GlobalEnv)
+    
 }
 
 ##' This function calculate elapsed time and put it to ".ee$time" 
