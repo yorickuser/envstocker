@@ -176,7 +176,7 @@
                 
             }
         
-    cat("try to load objects:", paste(varname,collapse=", "),"\n");
+    cat("loading objects:", paste(varname,collapse=", "),"\n");
     for (i in 1:length(varname)){
         tryCatch(assign(varname[i],get(varname[i], envir = ee),envir=.GlobalEnv))
     }
