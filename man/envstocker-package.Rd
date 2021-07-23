@@ -7,7 +7,7 @@
 \alias{envstocker}
 \title{stock and load execution environments of functions for debugging}
 \description{
-For usage example, see descripton for ".eel" function.
+For usage example, see descripton for ".ee.l" function.
 }
 \author{
 \strong{Maintainer}: Hiroshi C. Ito \email{hiroshibeetle@gmail.com}

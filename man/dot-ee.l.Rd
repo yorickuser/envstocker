@@ -58,7 +58,7 @@ ls.str()
 as.list(.ee$fact.2)
 
 .ee.set()
-fact(3,1,flag_ppp=TRUE) ##This causes error because ppp does not exist
+fact(3,1,flag_ppp=FALSE) ##This causes error because ppp does not exist
 .ee.subt_time()
 
 .ee.(0)
